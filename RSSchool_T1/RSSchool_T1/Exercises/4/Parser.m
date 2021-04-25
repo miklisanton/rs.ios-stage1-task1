@@ -2,34 +2,24 @@
 
 @implementation Parser
 
-// Complete the parseString function below.
-- (NSArray <NSString*>*)parseString:(NSString*)string {
+- (NSArray <NSString*>*)parseString:(NSString*)string{
     NSMutableArray *output = [NSMutableArray array];
-    
-    for (int i = 0; i < [string length]; i++) {
-        if ([string characterAtIndex:i] == '<') {
-            int startIndex = i;
-            while ([string characterAtIndex:i] != '>') {
-                i++;
+    NSDictionary *brackets = @{
+        @"<": @">",
+        @"[": @"]",
+        @"(": @")",
+    };
+    for(NSString *key in brackets){
+        int start = -1;
+        int end = -1;
+        for (int i = 0; i < [string length]; i++) {
+            if ([[string substringWithRange:NSMakeRange(i, 1)] isEqualToString: key]) {
+                start = i;
             }
-            int endIndex = i;
-            [output addObject:[string substringWithRange:NSMakeRange(startIndex + 1, endIndex - startIndex - 1)]];
-        }
-        if ([string characterAtIndex:i] == '(') {
-            int startIndex = i;
-            while ([string characterAtIndex:i] != ')') {
-                i++;
+            if ([[string substringWithRange:NSMakeRange(i, 1)] isEqualToString: brackets[key]]) {
+                end = i;
+                [output addObject:[string substringWithRange:NSMakeRange(start + 1, end - start - 1)]];
             }
-            int endIndex = i;
-            [output addObject:[string substringWithRange:NSMakeRange(startIndex + 1, endIndex - startIndex - 1)]];
-        }
-        if ([string characterAtIndex:i] == '[') {
-            int startIndex = i;
-            while ([string characterAtIndex:i] != ']') {
-                i++;
-            }
-            int endIndex = i;
-            [output addObject:[string substringWithRange:NSMakeRange(startIndex + 1, endIndex - startIndex - 1)]];
         }
     }
     return output;
